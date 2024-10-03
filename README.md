@@ -16,8 +16,6 @@ The script initializes a variable `words`, which stores a string of common Engli
 1. **Include the script**: Integrate the `script.js` file into your project by importing or copying the code into your JavaScript environment.
 2. **Modify or Extend**: Feel free to modify the word list or extend the functionality of the script for specific word-processing needs.
 
-## Future Improvements
-- Add functionality to search, filter, or sort words.
-- Integrate with an API for more complex word processing tasks.
-- Support additional languages or larger word databases.
+
+Submission for WEC GDG Tasks
 
