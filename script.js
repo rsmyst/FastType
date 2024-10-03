@@ -1,0 +1,236 @@
+let words =
+  "a ability able about above accept according account across act action activity actually add address administration admit adult affect after again against age agency agent ago agree agreement ahead air all allow almost alone along already also although always American among amount analysis and animal another answer any anyone anything appear apply approach area argue arm around arrive art article artist as ask assume at attack attention attorney audience author authority available avoid away baby back bad bag ball bank bar base be beat beautiful because become bed before begin behavior behind believe benefit best better between beyond big bill billion bit black blood blue board body book born both box boy break bring brother budget build building business but buy by call camera campaign can cancer candidate capital car card care career carry case catch cause cell center central century certain certainly chair challenge chance change character charge check child choice choose church citizen city civil claim class clear clearly close coach cold collection college color come commercial common community company compare computer concern condition conference Congress consider consumer contain continue control cost could country couple course court cover create crime cultural culture cup current customer cut dark data daughter day dead deal death debate decade decide decision deep defense degree Democrat democratic describe design despite detail determine develop development die difference different difficult dinner direction director discover discuss discussion disease do doctor dog door down draw dream drive drop drug during each early east easy eat economic economy edge education effect effort eight either election else employee end energy enjoy enough enter entire environment environmental especially establish even evening event ever every everybody everyone everything evidence exactly example executive exist expect experience expert explain eye face fact factor fail fall family far fast father fear federal feel feeling few field fight figure fill film final finally financial find fine finger finish fire firm first fish five floor fly focus follow food foot for force foreign forget form former forward four free friend from front full fund future game garden gas general generation get girl give glass go goal good government great green ground group grow growth guess gun guy hair half hand hang happen happy hard have he head health hear heart heat heavy help her here herself high him himself his history hit hold home hope hospital hot hotel hour house how however huge human hundred husband I idea identify if image imagine impact important improve in include including increase indeed indicate individual industry information inside instead institution interest interesting international interview into investment involve issue it item its itself job join just keep key kid kill kind kitchen know knowledge land language large last late later laugh law lawyer lay lead leader learn least leave left leg legal less let letter level lie life light like likely line list listen little live local long look lose loss lot love low machine magazine main maintain major majority make man manage management manager many market marriage material matter may maybe me mean measure media medical meet meeting member memory mention message method middle might military million mind minute miss mission model modern moment money month more morning most mother mouth move movement movie Mr Mrs much music must my myself name nation national natural nature near nearly necessary need network never new news newspaper next nice night no none nor north not note nothing notice now number occur of off offer office officer official often oh oil ok old on once one only onto open operation opportunity option or order organization other others our out outside over own owner page pain painting paper parent part participant particular particularly partner party pass past patient pattern pay peace people per perform performance perhaps period person personal phone physical pick picture piece place plan plant play player PM point police policy political politics poor popular population position positive possible power practice prepare present president pressure pretty prevent price private probably problem process produce product production professional professor program project property protect prove provide public pull purpose push put quality question quickly quite race radio raise range rate rather reach read ready real reality realize really reason receive recent recently recognize record red reduce reflect region relate relationship religious remain remember remove report represent Republican require research resource respond response responsibility rest result return reveal rich right rise risk road rock role room rule run safe same save say scene school science scientist score sea season seat second section security see seek seem sell send senior sense series serious serve service set seven several sex sexual shake share she shoot short shot should shoulder show side sign significant similar simple simply since sing single sister sit site situation six size skill skin small smile so social society soldier some somebody someone something sometimes son song soon sort sound source south southern space speak special specific speech spend sport spring staff stage stand standard star start state statement station stay step still stock stop store story strategy street strong structure student study stuff style subject success successful such suddenly suffer suggest summer support sure surface system table take talk task tax teach teacher team technology television tell ten tend term test than thank that the their them themselves then theory there these they thing think third this those though thought thousand threat three through throughout throw thus time to today together tonight too top total tough toward town trade traditional training travel treat treatment tree trial trip trouble true truth try turn TV two type under understand unit until up upon us use usually value various very victim view violence visit voice vote wait walk wall want war watch water way we weapon wear week weight well west western what whatever when where whether which while white who whole whom whose why wide wife will win wind window wish with within without woman wonder word work worker world worry would write writer wrong yard yeah year yes yet you young your yourself";
+
+words = words.split(" ").sort(() => 0.5 * Math.random());
+let resultsList = [];
+const wordsCount = words.length;
+const gameTime = 15 * 1000;
+window.timer = null;
+window.gameStart = null;
+window.pauseTime = 0;
+
+function addClass(el, name) {
+  el.className += " " + name;
+}
+function removeClass(el, name) {
+  el.className = el.className.replace(name, "");
+}
+
+function randomWord() {
+  const randomIndex = Math.ceil(Math.random() * wordsCount);
+  return words[randomIndex - 1];
+}
+
+function formatWord(word) {
+  return `<div class="word"><span class="letter">${word
+    .split("")
+    .join('</span><span class="letter">')}</span></div>`;
+}
+
+function newGame() {
+  document.getElementById("words").innerHTML = "";
+  for (let i = 0; i < 200; i++) {
+    document.getElementById("words").innerHTML += formatWord(randomWord());
+  }
+  addClass(document.querySelector(".word"), "current");
+  addClass(document.querySelector(".letter"), "current");
+  document.getElementById("info").innerHTML = gameTime / 1000 + "";
+  window.timer = null;
+  speedData = []; // Reset speed data for new game
+  if (chart) {
+    chart.destroy(); // Destroy previous chart instance if exists
+  }
+}
+
+function getWpm() {
+  const words = [...document.querySelectorAll(".word")];
+  const lastTypedWord = document.querySelector(".word.current");
+  const lastTypedWordIndex = words.indexOf(lastTypedWord) + 1;
+  const typedWords = words.slice(0, lastTypedWordIndex);
+  const correctWords = typedWords.filter((word) => {
+    const letters = [...word.children];
+    const incorrectLetters = letters.filter((letter) =>
+      letter.className.includes("incorrect")
+    );
+    const correctLetters = letters.filter((letter) =>
+      letter.className.includes("correct")
+    );
+    return (
+      incorrectLetters.length === 0 && correctLetters.length === letters.length
+    );
+  });
+  return (correctWords.length / gameTime) * 60000;
+}
+
+function gameOver() {
+  clearInterval(window.timer);
+  addClass(document.getElementById("game"), "over");
+  const result = getWpm();
+  resultsList += result;
+  document.getElementById("info").innerHTML = `WPM: ${result}`;
+  renderChart(); // Render the chart when the game is over
+}
+
+document.getElementById("game").addEventListener("keyup", (ev) => {
+  const key = ev.key;
+  const currentWord = document.querySelector(".word.current");
+  const currentLetter = document.querySelector(".letter.current");
+  const expected = currentLetter?.innerHTML || " ";
+  const isLetter = key.length === 1 && key !== " ";
+  const isSpace = key === " ";
+  const isBackspace = key === "Backspace";
+  const isFirstLetter = currentLetter === currentWord.firstChild;
+
+  if (document.querySelector("#game.over")) {
+    return;
+  }
+
+  // console.log({ key, expected });
+
+  if (!window.timer && isLetter) {
+    window.timer = setInterval(() => {
+      if (!window.gameStart) {
+        window.gameStart = new Date().getTime();
+      }
+      const currentTime = new Date().getTime();
+      const msPassed = currentTime - window.gameStart;
+      const sPassed = Math.round(msPassed / 1000);
+      const sLeft = Math.round(gameTime / 1000 - sPassed);
+      if (sLeft <= 0) {
+        gameOver();
+        return;
+      }
+      document.getElementById("info").innerHTML = sLeft + "";
+      updateWpmLog(); // Update WPM log every second
+    }, 1000);
+  }
+
+  if (isLetter) {
+    if (currentLetter) {
+      addClass(currentLetter, key === expected ? "correct" : "incorrect");
+      removeClass(currentLetter, "current");
+      if (currentLetter.nextSibling) {
+        addClass(currentLetter.nextSibling, "current");
+      }
+    } else {
+      const incorrectLetter = document.createElement("span");
+      incorrectLetter.innerHTML = key;
+      incorrectLetter.className = "letter incorrect extra";
+      currentWord.appendChild(incorrectLetter);
+    }
+  }
+
+  if (isSpace) {
+    if (expected !== " ") {
+      const lettersToInvalidate = [
+        ...document.querySelectorAll(".word.current .letter:not(.correct)"),
+      ];
+      lettersToInvalidate.forEach((letter) => {
+        addClass(letter, "incorrect");
+      });
+    }
+    removeClass(currentWord, "current");
+    addClass(currentWord.nextSibling, "current");
+    if (currentLetter) {
+      removeClass(currentLetter, "current");
+    }
+    addClass(currentWord.nextSibling.firstChild, "current");
+  }
+
+  if (isBackspace) {
+    if (currentLetter && isFirstLetter) {
+      // make prev word current, last letter current
+      removeClass(currentWord, "current");
+      addClass(currentWord.previousSibling, "current");
+      removeClass(currentLetter, "current");
+      addClass(currentWord.previousSibling.lastChild, "current");
+      removeClass(currentWord.previousSibling.lastChild, "incorrect");
+      removeClass(currentWord.previousSibling.lastChild, "correct");
+    }
+    if (currentLetter && !isFirstLetter) {
+      // move back one letter, invalidate letter
+      removeClass(currentLetter, "current");
+      addClass(currentLetter.previousSibling, "current");
+      removeClass(currentLetter.previousSibling, "incorrect");
+      removeClass(currentLetter.previousSibling, "correct");
+    }
+    if (!currentLetter) {
+      addClass(currentWord.lastChild, "current");
+      removeClass(currentWord.lastChild, "incorrect");
+      removeClass(currentWord.lastChild, "correct");
+    }
+  }
+
+  // move lines / words
+  if (currentWord.getBoundingClientRect().top > 250) {
+    const words = document.getElementById("words");
+    const margin = parseInt(words.style.marginTop || "0px");
+    words.style.marginTop = margin - 35 + "px";
+  }
+
+  // move cursor
+  const nextLetter = document.querySelector(".letter.current");
+  const nextWord = document.querySelector(".word.current");
+  const cursor = document.getElementById("cursor");
+  cursor.style.top =
+    (nextLetter || nextWord).getBoundingClientRect().top + 2 + "px";
+  cursor.style.left =
+    (nextLetter || nextWord).getBoundingClientRect()[
+      nextLetter ? "left" : "right"
+    ] + "px";
+});
+document.getElementById("newGameBtn").addEventListener("click", () => {
+  gameOver();
+  newGame();
+});
+let speedData = []; // Store WPM data per second
+let chart = null;
+
+// Initialize the chart (runs when the test ends)
+function renderChart() {
+  const ctx = document.getElementById("typingChart").getContext("2d");
+  chart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: Array.from({ length: speedData.length }, (_, i) => i + 1), // 1 to n seconds
+      datasets: [
+        {
+          label: "Words per Minute",
+          data: speedData,
+          borderColor: "rgba(75, 192, 192, 1)",
+          borderWidth: 2,
+          fill: false,
+        },
+      ],
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: "WPM",
+          },
+        },
+        x: {
+          title: {
+            display: true,
+            text: "Time (seconds)",
+          },
+        },
+      },
+    },
+  });
+}
+
+function updateWpmLog() {
+  const result = getWpm();
+  speedData.push(result);
+  if (chart) {
+    chart.data.labels.push(speedData.length);
+    chart.data.datasets[0].data = speedData;
+    chart.update();
+  }
+}
+
+newGame();
