@@ -20,11 +20,7 @@ FastType is a web-based typing game designed to help users improve their typing 
    ```sh
    cd FastType
    ```
-3. Open 
-
-index.html
-
- in your preferred web browser.
+3. Open index.html in your preferred web browser.
 
 ## Usage
 
