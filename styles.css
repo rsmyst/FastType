@@ -89,17 +89,6 @@ div.word {
     opacity: 1;
   }
 }
-/* #cursor {
-  display: none;
-  width: 2px;
-  height: 1.6rem;
-  background: var(--primaryColor);
-  position: fixed;
-  top: 198px;
-  left: 18px;
-  animation: blink 0.7s infinite;
-}
-   */
 #cursor {
   position: absolute;
   width: 2px;
