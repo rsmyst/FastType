@@ -36,9 +36,9 @@ function newGame() {
   addClass(document.querySelector(".letter"), "current");
   document.getElementById("info").innerHTML = gameTime / 1000 + "";
   window.timer = null;
-  speedData = []; // Reset speed data for new game
+  speedData = [];
   if (chart) {
-    chart.destroy(); // Destroy previous chart instance if exists
+    chart.destroy();
   }
 }
 
@@ -139,7 +139,6 @@ document.getElementById("game").addEventListener("keyup", (ev) => {
 
   if (isBackspace) {
     if (currentLetter && isFirstLetter) {
-      // make prev word current, last letter current
       removeClass(currentWord, "current");
       addClass(currentWord.previousSibling, "current");
       removeClass(currentLetter, "current");
@@ -161,7 +160,6 @@ document.getElementById("game").addEventListener("keyup", (ev) => {
     }
   }
 
-  // move lines / words
   if (currentWord.getBoundingClientRect().top > 250) {
     const words = document.getElementById("words");
     const margin = parseInt(words.style.marginTop || "0px");
@@ -183,16 +181,18 @@ document.getElementById("newGameBtn").addEventListener("click", () => {
   gameOver();
   newGame();
 });
-let speedData = []; // Store WPM data per second
+let speedData = [];
 let chart = null;
+document.getElementById("newGameBtn").addEventListener("click", () => {
+  location.reload();
+});
 
-// Initialize the chart (runs when the test ends)
 function renderChart() {
   const ctx = document.getElementById("typingChart").getContext("2d");
   chart = new Chart(ctx, {
     type: "line",
     data: {
-      labels: Array.from({ length: speedData.length }, (_, i) => i + 1), // 1 to n seconds
+      labels: Array.from({ length: speedData.length }, (_, i) => i + 1),
       datasets: [
         {
           label: "Words per Minute",
