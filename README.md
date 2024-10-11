@@ -41,9 +41,8 @@ index.html
 5. At the end of the game, your WPM score will be displayed, and your score will be added to the leaderboard.
 6. The leaderboard will persist across sessions using local storage.
 
-## Video Tech Demo
-
-[Insert Video Tech Demo Link Here]
+## References
+- [Vid](https://www.youtube.com/watch?v=E_tZH9R_zi8) (A basic typing game. I built on top of this to add better timers and graph calculation)
 
 
 Submission for GDG WEC 2024 Task
