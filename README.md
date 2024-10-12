@@ -1,6 +1,6 @@
 # FastType
 
-FastType is a web-based typing game designed to help users improve their typing speed and accuracy. The game presents a series of words that the user must type as quickly and accurately as possible within a set time limit. At the end of each game, the user's words per minute (WPM) score is calculated and displayed. The game also features a leaderboard to track high scores.
+FastType is a web-based typing game designed to help users improve their typing speed and accuracy. The game presents a series of words that the user must type as quickly and accurately as possible within a set time limit. At the end of each game, the user's words per minute (WPM) score is calculated and displayed.
 
 ![image](https://github.com/user-attachments/assets/fe2b5933-d332-4bd8-bfbf-c5b9f6ce9980)
 
@@ -12,7 +12,6 @@ https://github.com/user-attachments/assets/01da6167-d26f-4dde-a053-eb3469b6eb40
 
 - Randomized word list for each game session
 - Real-time WPM calculation
-- Leaderboard to track top scores
 - User name input for personalized score tracking
 - Persistent storage of scores using local storage
 
