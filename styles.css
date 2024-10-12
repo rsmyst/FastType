@@ -92,7 +92,7 @@ div.word {
 #cursor {
   position: absolute;
   width: 2px;
-  height: 1.4rem; /* Adjust height to match font size */
+  height: 1.4rem; 
   background-color: var(--primaryColor);
   transition: top 0.1s, left 0.1s;
 }
