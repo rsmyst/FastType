@@ -20,7 +20,7 @@ https://github.com/user-attachments/assets/01da6167-d26f-4dde-a053-eb3469b6eb40
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/yourusername/FastType.git
+   git clone https://github.com/rsmyst/FastType.git
    ```
 2. Navigate to the project directory:
    ```sh
